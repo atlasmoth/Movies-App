@@ -40,7 +40,7 @@ export default function() {
       </label>
       <div className="movies-container">
         {movies.loading ? (
-          <h2>Loading bruh...</h2>
+          <h2>Loading ...</h2>
         ) : (
           movies.movies.map(movie => <MovieCrd key={movie.id} movie={movie} />)
         )}
