@@ -1,23 +1,26 @@
 import React, { useContext, useEffect, useState } from "react";
 import AppContext from "./AppContext";
 import MovieCard from "./MovieCard";
+
 export default function LikedMovies() {
   const [movies, setMovies] = useState({ movies: [], loading: true });
   const contextObject = useContext(AppContext);
-  useEffect(() => {
-    Promise.all(
-      contextObject.likedMovies.map(item =>
-        fetch(
-          `https://api.themoviedb.org/3/movie/${item}?api_key=${process.env.API_KEY}&language=en-US`
-        ).then(data => data.json())
-      )
-    )
-      .then(movies => {
-        setMovies({ movies, loading: false });
-      })
-      .catch(console.log);
-  });
+  const { likedMovies } = contextObject;
 
+  useEffect(() => {
+    Promise.all([...likedMovies.map(liked => getMovie(liked))]).then(data =>
+      setMovies({ movies: data, loading: false })
+    );
+    return () => {
+      setMovies({ movies: [], loading: true });
+    };
+  }, [likedMovies]);
+
+  function getMovie(id) {
+    return fetch(
+      `https://api.themoviedb.org/3/movie/${id}?api_key=${process.env.API_KEY}&language=en-US`
+    ).then(data => data.json());
+  }
   return (
     <div className="Movies">
       <div className="movies-container">
@@ -30,6 +33,3 @@ export default function LikedMovies() {
     </div>
   );
 }
-
-//poster_path: `http://image.tmdb.org/t/p/w300/${movie.poster_path}`,
-// backdrop_path: `http://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
