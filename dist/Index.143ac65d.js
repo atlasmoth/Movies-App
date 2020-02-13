@@ -6839,8 +6839,9 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-var _default = (0, _react.memo)(function Movie(_ref) {
-  var match = _ref.match;
+function Movie(_ref) {
+  var match = _ref.match,
+      history = _ref.history;
 
   var _useState = (0, _react.useState)({
     movie: {},
@@ -6898,7 +6899,11 @@ var _default = (0, _react.memo)(function Movie(_ref) {
     }, "Go to Homepage")), _react.default.createElement("p", null, overview), _react.default.createElement("h4", null, "Release Date : ", release_date), _react.default.createElement("h4", null, tagline), _react.default.createElement("h3", null, "Runtime : ", (runtime / 60).toFixed(1), " hours."), _react.default.createElement("h4", null, status), _react.default.createElement("div", {
       className: "links"
     }, _react.default.createElement(_reactRouterDom.Link, {
-      to: "/"
+      to: "/",
+      onClick: function onClick(e) {
+        e.preventDefault();
+        history.goBack();
+      }
     }, "Back"), isLiked ? _react.default.createElement("button", {
       className: "button-like",
       onClick: function onClick() {
@@ -6917,8 +6922,9 @@ var _default = (0, _react.memo)(function Movie(_ref) {
       }
     }, "Like")));
   }
-});
+}
 
+var _default = Movie;
 exports.default = _default;
 },{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./AppContext":"AppContext.js"}],"LikedMovies.js":[function(require,module,exports) {
 "use strict";
@@ -7000,8 +7006,7 @@ function LikedMovies() {
       movie: movie
     });
   })));
-} //poster_path: `http://image.tmdb.org/t/p/w300/${movie.poster_path}`,
-// backdrop_path: `http://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
+}
 },{"react":"../node_modules/react/index.js","./AppContext":"AppContext.js","./MovieCard":"MovieCard.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
@@ -36307,7 +36312,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49302" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51590" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

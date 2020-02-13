@@ -1,8 +1,8 @@
 import React, { memo, useEffect, useState, useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import AppContext from "./AppContext";
 
-export default memo(function Movie({ match }) {
+function Movie({ match, history }) {
   const [movie, setMovie] = useState({ movie: {}, loading: true });
   const contextObj = useContext(AppContext);
 
@@ -49,7 +49,15 @@ export default memo(function Movie({ match }) {
         <h3>Runtime : {(runtime / 60).toFixed(1)} hours.</h3>
         <h4>{status}</h4>
         <div className="links">
-          <Link to="/">Back</Link>
+          <Link
+            to="/"
+            onClick={e => {
+              e.preventDefault();
+              history.goBack();
+            }}
+          >
+            Back
+          </Link>
           {isLiked ? (
             <button
               className="button-like"
@@ -73,4 +81,6 @@ export default memo(function Movie({ match }) {
       </div>
     );
   }
-});
+}
+
+export default Movie;
