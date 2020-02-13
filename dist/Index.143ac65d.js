@@ -6968,7 +6968,7 @@ function LikedMovies() {
         movies: movies,
         loading: false
       });
-    });
+    }).catch(console.log);
   });
   return _react.default.createElement("div", {
     className: "Movies"
@@ -7020,12 +7020,6 @@ function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) ||
 
 function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
 
 function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
@@ -7034,24 +7028,27 @@ function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.
 
 function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
 
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function reducer(state, action) {
   switch (action.type) {
     case "add":
       {
-        localStorage.setItem("liked", JSON.stringify([].concat(_toConsumableArray(state.liked), [action.id])));
         return _objectSpread({}, state, {
-          liked: _toConsumableArray(JSON.parse(localStorage.getItem("liked")))
+          liked: [].concat(_toConsumableArray(state.liked), [action.id])
         });
       }
 
     case "remove":
       {
-        var liked = JSON.parse(localStorage.getItem("liked"));
-        localStorage.setItem("liked", JSON.stringify(liked.filter(function (item) {
-          return item != action.id;
-        })));
         return _objectSpread({}, state, {
-          liked: _toConsumableArray(JSON.parse(localStorage.getItem("liked")))
+          liked: _toConsumableArray(state.liked.filter(function (item) {
+            return item != action.id;
+          }))
         });
       }
 
@@ -7072,6 +7069,9 @@ function App() {
       state = _useReducer2[0],
       dispatch = _useReducer2[1];
 
+  (0, _react.useEffect)(function () {
+    localStorage.setItem("liked", JSON.stringify(state.liked));
+  }, [state.liked]);
   var numLiked = (0, _react.useMemo)(function () {
     return state.liked.length;
   }, [state.liked]);
@@ -36287,7 +36287,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57851" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "49302" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

@@ -1,6 +1,6 @@
-import React, { useReducer, useMemo } from "react";
+import React, { useReducer, useMemo, useEffect } from "react";
 import Movies from "./Movies";
-import { Switch, NavLink, Link, Route, Redirect } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import "./App.css";
 import Header from "./Header";
 import Movie from "./Movie";
@@ -10,24 +10,15 @@ import AppContext from "./AppContext";
 function reducer(state, action) {
   switch (action.type) {
     case "add": {
-      localStorage.setItem(
-        "liked",
-        JSON.stringify([...state.liked, action.id])
-      );
       return {
         ...state,
-        liked: [...JSON.parse(localStorage.getItem("liked"))]
+        liked: [...state.liked, action.id]
       };
     }
     case "remove": {
-      const liked = JSON.parse(localStorage.getItem("liked"));
-      localStorage.setItem(
-        "liked",
-        JSON.stringify(liked.filter(item => item != action.id))
-      );
       return {
         ...state,
-        liked: [...JSON.parse(localStorage.getItem("liked"))]
+        liked: [...state.liked.filter(item => item != action.id)]
       };
     }
     default: {
@@ -39,6 +30,10 @@ function App() {
   const initArray = JSON.parse(localStorage.getItem("liked")) || [];
 
   const [state, dispatch] = useReducer(reducer, { liked: initArray });
+
+  useEffect(() => {
+    localStorage.setItem("liked", JSON.stringify(state.liked));
+  }, [state.liked]);
 
   const numLiked = useMemo(() => state.liked.length, [state.liked]);
 

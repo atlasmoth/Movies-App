@@ -11,9 +11,11 @@ export default function LikedMovies() {
           `https://api.themoviedb.org/3/movie/${item}?api_key=${process.env.API_KEY}&language=en-US`
         ).then(data => data.json())
       )
-    ).then(movies => {
-      setMovies({ movies, loading: false });
-    });
+    )
+      .then(movies => {
+        setMovies({ movies, loading: false });
+      })
+      .catch(console.log);
   });
 
   return (
