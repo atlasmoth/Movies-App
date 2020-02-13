@@ -6588,14 +6588,12 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 function MovieCrd(props) {
   var _props$movie = props.movie,
       title = _props$movie.title,
-      overview = _props$movie.overview,
-      release_date = _props$movie.release_date,
       poster_path = _props$movie.poster_path,
       id = _props$movie.id;
   return _react.default.createElement("div", {
     className: "movie-card"
   }, _react.default.createElement("img", {
-    src: poster_path,
+    src: "http://image.tmdb.org/t/p/w300/".concat(poster_path),
     alt: title
   }), _react.default.createElement("h3", null, title), _react.default.createElement(_reactRouterDom.Link, {
     to: "/movies/".concat(id)
@@ -6648,53 +6646,44 @@ function _default() {
       setPage = _useState4[1];
 
   (0, _react.useEffect)(function () {
-    fetch("https://api.themoviedb.org/3/movie/top_rated?api_key=".concat("a4c85240aeea37fe4ac5ef338d99cf65", "&language=en-US&page=").concat(page)).then(function (data) {
+    getMovies("https://api.themoviedb.org/3/movie/top_rated?api_key=".concat("a4c85240aeea37fe4ac5ef338d99cf65", "&language=en-US&page=").concat(page));
+  }, [page]);
+
+  function getMovies(link) {
+    fetch(link).then(function (data) {
       return data.json();
     }).then(function (_ref) {
       var results = _ref.results;
       setMovies({
         movies: results.map(function (movie) {
-          return _objectSpread({}, movie, {
-            poster_path: "http://image.tmdb.org/t/p/w300/".concat(movie.poster_path),
-            backdrop_path: "http://image.tmdb.org/t/p/w500/".concat(movie.backdrop_path)
-          });
+          return _objectSpread({}, movie);
         }),
         loading: false
       });
     }).catch(function (e) {
       return console.log(e.message);
     });
-  }, [page]);
+  }
+
   return _react.default.createElement("div", {
     className: "Movies"
   }, _react.default.createElement("label", {
     htmlFor: "selector"
-  }, "Select Page - \xA0", _react.default.createElement("select", {
+  }, "Select Page - \xA0", _react.default.createElement("input", {
+    type: "number",
+    value: page,
+    min: "1",
+    max: "1000",
     onChange: function onChange(e) {
-      return setPage(e.target.value);
-    },
-    id: "selector"
-  }, _react.default.createElement("option", {
-    value: "1"
-  }, "1"), _react.default.createElement("option", {
-    value: "2"
-  }, "2"), _react.default.createElement("option", {
-    value: "3"
-  }, "3"), _react.default.createElement("option", {
-    value: "4"
-  }, "4"), _react.default.createElement("option", {
-    value: "5"
-  }, "5"), _react.default.createElement("option", {
-    value: "6"
-  }, "6"), _react.default.createElement("option", {
-    value: "7"
-  }, "7"), _react.default.createElement("option", {
-    value: "8"
-  }, "8"), _react.default.createElement("option", {
-    value: "9"
-  }, "9"), _react.default.createElement("option", {
-    value: "10"
-  }, "10"))), _react.default.createElement("div", {
+      if (Number(e.target.value < 1)) {
+        setPage(1);
+      } else if (Number(e.target.value > 100)) {
+        setPage(100);
+      } else {
+        setPage(e.target.value);
+      }
+    }
+  })), _react.default.createElement("div", {
     className: "movies-container"
   }, movies.loading ? _react.default.createElement("h2", null, "Loading ...") : movies.movies.map(function (movie) {
     return _react.default.createElement(_MovieCard.default, {
@@ -6781,19 +6770,47 @@ module.hot.accept(reloadCSS);
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.default = Header;
+exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+var _reactRouterDom = require("react-router-dom");
 
-function Header() {
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+var _default = (0, _react.memo)(function Header(_ref) {
+  var numLiked = _ref.numLiked;
   return _react.default.createElement("div", {
     className: "Header"
   }, _react.default.createElement("nav", {
     className: "Header-nav"
-  }, _react.default.createElement("h2", null, "Movies App")));
-}
+  }, _react.default.createElement("h2", null, "Movies App"), _react.default.createElement("div", null, _react.default.createElement(_reactRouterDom.NavLink, {
+    activeClassName: "gen-link",
+    to: "/movies/liked"
+  }, "Liked ", _react.default.createElement("span", {
+    className: "counter"
+  }, numLiked)), _react.default.createElement(_reactRouterDom.NavLink, {
+    to: "/",
+    activeClassName: "gen-link"
+  }, "Home"))));
+});
+
+exports.default = _default;
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js"}],"AppContext.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _react = require("react");
+
+var AppContext = (0, _react.createContext)();
+var _default = AppContext;
+exports.default = _default;
 },{"react":"../node_modules/react/index.js"}],"Movie.js":[function(require,module,exports) {
 "use strict";
 
@@ -6803,6 +6820,12 @@ Object.defineProperty(exports, "__esModule", {
 exports.default = void 0;
 
 var _react = _interopRequireWildcard(require("react"));
+
+var _reactRouterDom = require("react-router-dom");
+
+var _AppContext = _interopRequireDefault(require("./AppContext"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
 
@@ -6827,6 +6850,7 @@ var _default = (0, _react.memo)(function Movie(_ref) {
       movie = _useState2[0],
       setMovie = _useState2[1];
 
+  var contextObj = (0, _react.useContext)(_AppContext.default);
   (0, _react.useEffect)(function () {
     fetch("https://api.themoviedb.org/3/movie/".concat(match.params.id, "?api_key=").concat("a4c85240aeea37fe4ac5ef338d99cf65", "&language=en-US")).then(function (data) {
       return data.json();
@@ -6835,7 +6859,6 @@ var _default = (0, _react.memo)(function Movie(_ref) {
         movie: movie,
         loading: false
       });
-      console.log(movie);
     }).catch(function (e) {
       return console.log(e.message);
     });
@@ -6848,14 +6871,118 @@ var _default = (0, _react.memo)(function Movie(_ref) {
       }
     }, "Fethcing Movie...");
   } else {
+    var _movie$movie = movie.movie,
+        release_date = _movie$movie.release_date,
+        original_title = _movie$movie.original_title,
+        homepage = _movie$movie.homepage,
+        overview = _movie$movie.overview,
+        status = _movie$movie.status,
+        runtime = _movie$movie.runtime,
+        tagline = _movie$movie.tagline,
+        backdrop_path = _movie$movie.backdrop_path;
+    var isLiked = contextObj.likedMovies.find(function (item) {
+      return item == match.params.id;
+    });
     return _react.default.createElement("div", {
       className: "Movie"
-    }, JSON.stringify(movie.movie, null, 2));
+    }, _react.default.createElement("h2", null, original_title), isLiked && _react.default.createElement("span", {
+      className: "like"
+    }, "\uD83D\uDE0D"), _react.default.createElement("div", {
+      className: "media"
+    }, _react.default.createElement("img", {
+      src: "http://image.tmdb.org/t/p/w300/".concat(backdrop_path),
+      alt: ""
+    }), _react.default.createElement("a", {
+      href: homepage,
+      target: "_blank"
+    }, "Go to Homepage")), _react.default.createElement("p", null, overview), _react.default.createElement("h4", null, "Release Date : ", release_date), _react.default.createElement("h4", null, tagline), _react.default.createElement("h3", null, "Runtime : ", (runtime / 60).toFixed(1), " hours."), _react.default.createElement("h4", null, status), _react.default.createElement("div", {
+      className: "links"
+    }, _react.default.createElement(_reactRouterDom.Link, {
+      to: "/"
+    }, "Back"), isLiked ? _react.default.createElement("button", {
+      className: "button-like",
+      onClick: function onClick() {
+        return contextObj.dispatch({
+          type: "remove",
+          id: match.params.id
+        });
+      }
+    }, "Unlike") : _react.default.createElement("button", {
+      className: "button-like",
+      onClick: function onClick() {
+        return contextObj.dispatch({
+          type: "add",
+          id: match.params.id
+        });
+      }
+    }, "Like")));
   }
 });
 
 exports.default = _default;
-},{"react":"../node_modules/react/index.js"}],"App.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./AppContext":"AppContext.js"}],"LikedMovies.js":[function(require,module,exports) {
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = LikedMovies;
+
+var _react = _interopRequireWildcard(require("react"));
+
+var _AppContext = _interopRequireDefault(require("./AppContext"));
+
+var _MovieCard = _interopRequireDefault(require("./MovieCard"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function LikedMovies() {
+  var _useState = (0, _react.useState)({
+    movies: [],
+    loading: true
+  }),
+      _useState2 = _slicedToArray(_useState, 2),
+      movies = _useState2[0],
+      setMovies = _useState2[1];
+
+  var contextObject = (0, _react.useContext)(_AppContext.default);
+  (0, _react.useEffect)(function () {
+    Promise.all(contextObject.likedMovies.map(function (item) {
+      return fetch("https://api.themoviedb.org/3/movie/".concat(item, "?api_key=").concat("a4c85240aeea37fe4ac5ef338d99cf65", "&language=en-US")).then(function (data) {
+        return data.json();
+      });
+    })).then(function (movies) {
+      setMovies({
+        movies: movies,
+        loading: false
+      });
+    });
+  });
+  return _react.default.createElement("div", {
+    className: "Movies"
+  }, _react.default.createElement("div", {
+    className: "movies-container"
+  }, movies.loading ? _react.default.createElement("h2", null, "Loading ...") : movies.movies.map(function (movie) {
+    return _react.default.createElement(_MovieCard.default, {
+      key: movie.id,
+      movie: movie
+    });
+  })));
+} //poster_path: `http://image.tmdb.org/t/p/w300/${movie.poster_path}`,
+// backdrop_path: `http://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
+},{"react":"../node_modules/react/index.js","./AppContext":"AppContext.js","./MovieCard":"MovieCard.js"}],"App.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -6863,7 +6990,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _react = _interopRequireDefault(require("react"));
+var _react = _interopRequireWildcard(require("react"));
 
 var _Movies = _interopRequireDefault(require("./Movies"));
 
@@ -6875,15 +7002,92 @@ var _Header = _interopRequireDefault(require("./Header"));
 
 var _Movie = _interopRequireDefault(require("./Movie"));
 
+var _LikedMovies = _interopRequireDefault(require("./LikedMovies"));
+
+var _AppContext = _interopRequireDefault(require("./AppContext"));
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return null; var cache = new WeakMap(); _getRequireWildcardCache = function () { return cache; }; return cache; }
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance"); }
+
+function _iterableToArray(iter) { if (Symbol.iterator in Object(iter) || Object.prototype.toString.call(iter) === "[object Arguments]") return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } }
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "add":
+      {
+        localStorage.setItem("liked", JSON.stringify([].concat(_toConsumableArray(state.liked), [action.id])));
+        return _objectSpread({}, state, {
+          liked: _toConsumableArray(JSON.parse(localStorage.getItem("liked")))
+        });
+      }
+
+    case "remove":
+      {
+        var liked = JSON.parse(localStorage.getItem("liked"));
+        localStorage.setItem("liked", JSON.stringify(liked.filter(function (item) {
+          return item != action.id;
+        })));
+        return _objectSpread({}, state, {
+          liked: _toConsumableArray(JSON.parse(localStorage.getItem("liked")))
+        });
+      }
+
+    default:
+      {
+        return state;
+      }
+  }
+}
+
 function App() {
+  var initArray = JSON.parse(localStorage.getItem("liked")) || [];
+
+  var _useReducer = (0, _react.useReducer)(reducer, {
+    liked: initArray
+  }),
+      _useReducer2 = _slicedToArray(_useReducer, 2),
+      state = _useReducer2[0],
+      dispatch = _useReducer2[1];
+
+  var numLiked = (0, _react.useMemo)(function () {
+    return state.liked.length;
+  }, [state.liked]);
   return _react.default.createElement("div", {
     className: "App"
-  }, _react.default.createElement(_Header.default, null), _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
+  }, _react.default.createElement(_AppContext.default.Provider, {
+    value: {
+      likedMovies: state.liked,
+      dispatch: dispatch
+    }
+  }, _react.default.createElement(_Header.default, {
+    numLiked: numLiked
+  }), _react.default.createElement(_reactRouterDom.Switch, null, _react.default.createElement(_reactRouterDom.Route, {
     exact: true,
-    path: "/",
-    component: _Movies.default
+    path: "/movies/liked",
+    component: _LikedMovies.default
   }), _react.default.createElement(_reactRouterDom.Route, {
     exact: true,
     path: "/movies/:id",
@@ -6892,17 +7096,21 @@ function App() {
     }
   }), _react.default.createElement(_reactRouterDom.Route, {
     exact: true,
+    path: "/",
+    component: _Movies.default
+  }), _react.default.createElement(_reactRouterDom.Route, {
+    exact: true,
     render: function render() {
       return _react.default.createElement(_reactRouterDom.Redirect, {
         to: "/"
       });
     }
-  })));
+  }))));
 }
 
 var _default = App;
 exports.default = _default;
-},{"react":"../node_modules/react/index.js","./Movies":"Movies.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./App.css":"App.css","./Header":"Header.js","./Movie":"Movie.js"}],"../node_modules/scheduler/cjs/scheduler.development.js":[function(require,module,exports) {
+},{"react":"../node_modules/react/index.js","./Movies":"Movies.js","react-router-dom":"../node_modules/react-router-dom/esm/react-router-dom.js","./App.css":"App.css","./Header":"Header.js","./Movie":"Movie.js","./LikedMovies":"LikedMovies.js","./AppContext":"AppContext.js"}],"../node_modules/scheduler/cjs/scheduler.development.js":[function(require,module,exports) {
 /** @license React v0.18.0
  * scheduler.development.js
  *
@@ -36079,7 +36287,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "51040" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "57851" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

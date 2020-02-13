@@ -4,40 +4,46 @@ import MovieCrd from "./MovieCard";
 export default function() {
   const [movies, setMovies] = useState({ movies: [], loading: true });
   const [page, setPage] = useState(1);
+
   useEffect(() => {
-    fetch(
+    getMovies(
       `https://api.themoviedb.org/3/movie/top_rated?api_key=${process.env.API_KEY}&language=en-US&page=${page}`
-    )
+    );
+  }, [page]);
+  function getMovies(link) {
+    fetch(link)
       .then(data => data.json())
       .then(({ results }) => {
         setMovies({
           movies: results.map(movie => ({
-            ...movie,
-            poster_path: `http://image.tmdb.org/t/p/w300/${movie.poster_path}`,
-            backdrop_path: `http://image.tmdb.org/t/p/w500/${movie.backdrop_path}`
+            ...movie
           })),
           loading: false
         });
       })
       .catch(e => console.log(e.message));
-  }, [page]);
+  }
   return (
     <div className="Movies">
       <label htmlFor="selector">
         Select Page - &nbsp;
-        <select onChange={e => setPage(e.target.value)} id="selector">
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
+        <input
+          type="number"
+          value={page}
+          min="1"
+          max="1000"
+          onChange={e => {
+            if (Number(e.target.value < 1)) {
+              setPage(1);
+            } else if (Number(e.target.value > 100)) {
+              setPage(100);
+            } else {
+              setPage(e.target.value);
+            }
+          }}
+        />
       </label>
+
       <div className="movies-container">
         {movies.loading ? (
           <h2>Loading ...</h2>
